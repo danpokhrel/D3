@@ -2,7 +2,7 @@
 // Input, the HUD, sound, and the order of events all live outside it.
 import Phaser from "phaser";
 import type { Cell, GameEvent, GameState, Terrain } from "../../core/mod.ts";
-import { terrainAt } from "../../core/mod.ts";
+import { cellKey, terrainAt } from "../../core/mod.ts";
 
 export const CELL_SIZE = 32;
 const VIEW_WIDTH = 800;
@@ -18,6 +18,13 @@ const TERRAIN_COLORS: Record<Terrain, number> = {
   dungeon: 0x2d5f9e,
   ocean: 0x6e6a66,
 };
+
+function darken(color: number, amount = 0.55): number {
+  const r = Math.round(((color >> 16) & 0xff) * amount);
+  const g = Math.round(((color >> 8) & 0xff) * amount);
+  const b = Math.round((color & 0xff) * amount);
+  return (r << 16) | (g << 8) | b;
+}
 
 // Enough cells to cover the view, plus a margin so that the camera can lag behind
 // the player without showing an unpainted edge.
@@ -36,6 +43,7 @@ function cellCenter({ x, y }: Cell): Cell {
 export class GridView extends Phaser.Scene {
   private readonly seed: number;
   private readonly start: Cell;
+  private readonly gathered = new Set<string>();
   private ground!: Phaser.GameObjects.Graphics;
   private marker!: Phaser.GameObjects.Arc;
 
@@ -83,6 +91,8 @@ export class GridView extends Phaser.Scene {
       case "blocked":
         return this.bump(event.at, event.toward);
       case "gathered":
+        this.gathered.add(cellKey(event.at));
+        this.drawCellsAround(event.at);
         return Promise.resolve();
       default:
         // A new event type fails to type-check here until it has a presentation.
@@ -128,7 +138,11 @@ export class GridView extends Phaser.Scene {
     this.ground.clear();
     for (let y = centerY - CELLS_DOWN; y <= centerY + CELLS_DOWN; y++) {
       for (let x = centerX - CELLS_ACROSS; x <= centerX + CELLS_ACROSS; x++) {
-        this.ground.fillStyle(TERRAIN_COLORS[terrainAt(this.seed, x, y)]);
+        const terrain = terrainAt(this.seed, x, y);
+        const color = TERRAIN_COLORS[terrain];
+        this.ground.fillStyle(
+          this.gathered.has(cellKey({ x, y })) ? darken(color) : color,
+        );
         this.ground.fillRect(
           x * CELL_SIZE,
           y * CELL_SIZE,
