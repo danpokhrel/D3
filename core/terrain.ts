@@ -9,13 +9,21 @@ export function terrainAt(seed: number, x: number, y: number): Terrain {
   // seeds would start inside a lake or walled into a pocket.
   const height = 0.5 + (raw - 0.5) * Math.min(1, Math.hypot(x, y) / 10);
   if (height < 0.3) return "ocean";
-  if (height > 0.7) return "beach";
-  return noise(seed + 2, x, y, 6) < 0.45 ? "forest" : "dungeon";
+  if (height > 0.7) return "dungeon";
+  return noise(seed + 2, x, y, 6) < 0.45 ? "forest" : "beach";
 }
 
 export function isPassable(terrain: Terrain): boolean {
   return terrain !== "ocean";
 }
+
+// Type Object: one row per terrain, saying what gathering there gives.
+export const YIELDS: Record<Terrain, string | null> = {
+  beach: "stone",
+  forest: "wood",
+  dungeon: "mana crystal",
+  ocean: null,
+};
 
 // Value noise: random numbers at coarse grid points, blended between them, so
 // that terrain forms regions instead of static.
