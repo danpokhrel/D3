@@ -37,8 +37,17 @@ export class Controller {
   }
 
   private keyDown(event: KeyboardEvent) {
+    if (event.ctrlKey || event.metaKey || event.altKey) return;
+    // G gathers on the player's cell. One gather per press: holding it does not repeat.
+    if (event.key.toLowerCase() === "g") {
+      if (event.repeat) return;
+      this.pressed = { type: "gather" };
+      this.next();
+      return;
+    }
+
     const direction = ARROWS[event.key];
-    if (!direction || event.ctrlKey || event.metaKey || event.altKey) return;
+    if (!direction) return;
     // Otherwise arrow keys would also scroll the page.
     event.preventDefault();
     if (event.repeat) return;
