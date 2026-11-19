@@ -1,4 +1,4 @@
-import { assertEquals } from "@std/assert";
+import { assert, assertEquals, assertNotEquals } from "@std/assert";
 import {
   apply,
   type GameState,
@@ -93,6 +93,21 @@ Deno.test("an event keeps its cells while state moves on", () => {
     from: { x: x + 1, y },
     to: { x, y },
   }]);
+});
+
+Deno.test("gather recieves copy of state", () => {
+  const state = besideEasternCell(true);
+
+  const [event] = apply(state, { type: "gather" });
+  assert(event.type === "gathered");
+  const kept = event.inventory;
+
+  apply(state, { type: "move", direction: "east" });
+  const [nextEvent] = apply(state, { type: "gather" });
+  assert(nextEvent.type === "gathered");
+  const check = nextEvent.inventory;
+
+  assertNotEquals(kept, check);
 });
 
 Deno.test("a failed gather changes nothing", () => {

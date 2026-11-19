@@ -45,6 +45,7 @@ export class Hud {
     if (event.type === "gathered") {
       this.gathered.add(cellKey(event.at));
       this.showPosition();
+      this.showInventory(event.inventory);
     }
   }
 
@@ -54,5 +55,15 @@ export class Hud {
     const terrain = terrainAt(this.seed, x, y);
     const spent = this.gathered.has(cellKey(this.here));
     element("terrain").textContent = `${terrain}${spent ? " (spent)" : ""}`;
+  }
+
+  private showInventory(inventory: Record<string, number>) {
+    element("inventory").replaceChildren(
+      ...Object.entries(inventory).map(([item, count]) => {
+        const row = document.createElement("li");
+        row.textContent = `${item}: ${count}`;
+        return row;
+      }),
+    );
   }
 }

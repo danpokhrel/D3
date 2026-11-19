@@ -11,6 +11,8 @@ const WALK_MS = 120;
 const BUMP_MS = 60;
 const MARKER_COLOR = 0xf5e6a8;
 const BUMP_COLOR = 0xe0533d;
+const GATHER_COLOR = 0xfff3c4;
+const GATHER_MS = 150;
 
 const TERRAIN_COLORS: Record<Terrain, number> = {
   beach: 0x5d9e4a,
@@ -93,7 +95,7 @@ export class GridView extends Phaser.Scene {
       case "gathered":
         this.gathered.add(cellKey(event.at));
         this.drawCellsAround(event.at);
-        return Promise.resolve();
+        return this.pop(event.at);
       default:
         // A new event type fails to type-check here until it has a presentation.
         event satisfies never;
@@ -131,7 +133,25 @@ export class GridView extends Phaser.Scene {
       });
     });
   }
-
+  private pop(at: Cell): Promise<void> {
+    console.log("pop at", at);
+    const { x, y } = cellCenter(at);
+    const flash = this.add.rectangle(x, y, CELL_SIZE, CELL_SIZE, GATHER_COLOR);
+    flash.setAlpha(0.8);
+    return new Promise((done) => {
+      this.tweens.add({
+        targets: flash,
+        scale: 3,
+        alpha: 0,
+        duration: GATHER_MS,
+        ease: "Cubic.easeOut",
+        onComplete: () => {
+          flash.destroy();
+          done();
+        },
+      });
+    });
+  }
   // Paint only what is near the camera. Asking the core again costs little, and
   // the world itself is never stored.
   private drawCellsAround({ x: centerX, y: centerY }: Cell) {
