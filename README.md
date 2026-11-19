@@ -6,7 +6,22 @@ Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) and 
 
 ## Target
 
-You are an advernturer looking to expore a dungeon. The terrain includes beach, forest, dungeon, tundra. The player can gather materials and craft torches, lockpicks, axes, etc to get into the core of the dungeon. 
+You are an adventurer looking to expore a dungeon. The terrain includes beach, forest, dungeon, tundra. The player can gather materials and craft torches, lockpicks, axes, etc to get into the core of the dungeon.
+
+Three walkable terrains: beach -> forest -> dungeon
+
+Beach:
+-stone
+
+forest: requires axe
+-wood
+
+dungeon: requires torch and lockpick
+-mana crystals
+
+dungeon core: requires magic ball
+
+Terrain boundary: ocean (below the beach)
 
 ## Two folders, two rules
 
