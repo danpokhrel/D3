@@ -4,6 +4,10 @@ A walking skeleton: one thin slice of a game that works from end to end. The pla
 
 Install [Deno](https://docs.deno.com/runtime/getting_started/installation/) and [Git](https://git-scm.com/downloads). Create your own repository from this template, clone it, open a terminal in that folder, and run `deno task setup` once. Run `deno task dev` and open the local URL printed in the terminal (normally `http://localhost:3000`). Arrow keys move. Add `?seed=7` to the URL for another world. Open the repository folder itself in VS Code, not a parent folder, and accept the recommended Deno extension. If Phaser still shows errors or `any` after `deno task setup`, type or save in that file once.
 
+## Target
+
+You are an advernturer looking to expore a dungeon. The terrain includes beach, forest, dungeon, tundra. The player can gather materials and craft torches, lockpicks, axes, etc to get into the core of the dungeon. 
+
 ## Two folders, two rules
 
 - **`core/`** holds the game itself: plain-data state, the seeded terrain function, and `apply(state, command)`. It has no clock, no animation, no browser, and no Phaser. A command updates the state it is given, immediately, and returns events: a record of what happened. Events are kept and played later while state keeps changing, so an event gets its own copies of any cells it reports, never an object that state still holds.
