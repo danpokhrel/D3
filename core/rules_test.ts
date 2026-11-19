@@ -25,6 +25,23 @@ function besideEasternCell(passable: boolean): GameState {
   throw new Error("Found no suitable cell on this row.");
 }
 
+// A state with the player on a beach cell, found by searching outward from the
+// origin so the test does not depend on the map layout.
+function onBeach(): GameState {
+  for (let r = 0; r < 50; r++) {
+    for (let y = -r; y <= r; y++) {
+      for (let x = -r; x <= r; x++) {
+        if (terrainAt(SEED, x, y) === "beach") {
+          const state = newGame(SEED);
+          state.player = { x, y };
+          return state;
+        }
+      }
+    }
+  }
+  throw new Error("Found no beach cell near the origin.");
+}
+
 Deno.test("moving onto passable terrain moves the player", () => {
   const state = besideEasternCell(true);
   const { x, y } = state.player;
@@ -76,4 +93,19 @@ Deno.test("an event keeps its cells while state moves on", () => {
     from: { x: x + 1, y },
     to: { x, y },
   }]);
+});
+
+Deno.test("a failed gather changes nothing", () => {
+  // Given a cell that has already been gathered
+  const state = onBeach();
+  const first = apply(state, { type: "gather" });
+  assertEquals(first.length, 1);
+  const snapshot = JSON.parse(JSON.stringify(state));
+
+  // When the player gathers there again
+  const events = apply(state, { type: "gather" });
+
+  // Then nothing happens and nothing changes
+  assertEquals(events, []);
+  assertEquals(state, snapshot);
 });

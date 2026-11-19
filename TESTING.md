@@ -1,8 +1,13 @@
 # Manual test script
 
-For a person, or an agent driving a browser. Run `deno task dev` and open the local URL with `?seed=121`. Before each section, reload. To read logical state, use `game.state` in the console. To read what has played, use the panel beside the grid, including the `#live` text, or look at the marker.
+For a person, or an agent driving a browser. Run `deno task dev` and open the
+local URL with `?seed=121`. Before each section, reload. To read logical state,
+use `game.state` in the console. To read what has played, use the panel beside
+the grid, including the `#live` text, or look at the marker.
 
-**Promotion rule:** a bug found by hand or by an agent becomes a permanent test in `core/` before it is fixed, unless it truly lives in `game/`, in which case add a step here.
+**Promotion rule:** a bug found by hand or by an agent becomes a permanent test
+in `core/` before it is fixed, unless it truly lives in `game/`, in which case
+add a step here.
 
 | #  | Action                                                    | Expected observation                                                                                                                                        |
 | -- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
