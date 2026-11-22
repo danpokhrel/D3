@@ -1,9 +1,13 @@
-/* The page around the grid. Everything here is yours to restyle. */
+/* Dark and gritty: canvas takes the spotlight, HUD panel on the right. */
 body {
   margin: 0;
-  background: #14161a;
-  color: #e8e4da;
-  font: 14px system-ui, sans-serif;
+  min-height: 100vh;
+  background: #0b0b0d radial-gradient(ellipse at top, #1a1712 0%, #0b0b0d 70%);
+  color: #cfc6b8;
+  font:
+    15px Georgia,
+    "Times New Roman",
+    serif;
 }
 
 #app {
@@ -13,57 +17,17 @@ body {
   padding: 16px;
 }
 
-#grid canvas {
-  display: block;
-  border-radius: 4px;
-}
-
-#hud {
-  flex: 1 1 200px;
-  max-width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-#hud dl {
-  margin: 0;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 2px 12px;
-}
-
-#hud dt {
-  color: #8d8a82;
-}
-
-#hud dd {
-  margin: 0;
-}
-
-#live {
-  min-height: 1.4em;
-  margin: 0;
-  font-family: monospace;
-  color: #b7b3a8;
-}
-
-#mute {
-  align-self: start;
-  padding: 4px 10px;
-  color: inherit;
-  background: #262a31;
-  border: 1px solid #3a3f48;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Slight tilt and vignette: pure presentation, Phaser untouched. */
 #grid {
   position: relative;
   perspective: 1200px;
 }
 
+#grid canvas {
+  display: block;
+  border-radius: 4px;
+}
+
+/* Slight tilt and vignette: pure presentation, Phaser untouched. */
 #grid canvas,
 #grid::after {
   transform: rotateX(6deg);
@@ -80,4 +44,62 @@ body {
     transparent 55%,
     rgb(0 0 0 / 0.5) 100%
   );
+}
+
+#hud {
+  flex: 1 1 220px;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: rgb(10 9 8 / 0.9);
+  border: 1px solid #3a3128;
+  border-radius: 8px;
+  box-shadow: inset 0 0 24px rgb(0 0 0 / 0.7);
+  font-family:
+    "Segoe Script", "Brush Script MT", "Lucida Handwriting", cursive;
+}
+
+#hud dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 12px;
+}
+
+#hud dt {
+  color: #8a7a5e;
+}
+
+#hud dd {
+  margin: 0;
+}
+
+#live {
+  min-height: 1.4em;
+  margin: 0;
+  font-family: inherit;
+  color: #a89678;
+}
+
+#inventory {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#mute {
+  align-self: start;
+  padding: 6px 12px;
+  font-family: inherit;
+  color: #cfc6b8;
+  background: #17140f;
+  border: 1px solid #3a3128;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#mute:hover {
+  background: #221d15;
 }
