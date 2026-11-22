@@ -18,7 +18,20 @@ function describe(event: GameEvent): string {
       return `blocked by ${event.terrain} at ${event.toward.x}, ${event.toward.y}`;
     case "gathered":
       return `Gathered ${event.item} (you have ${event.count})`;
+    case "crafted": {
+      const made = event.output;
+      const amount = made.count > 1 ? `${made.count} ` : "";
+      return `Made ${amount}${made.item} from ${summarize(event.inputs)}`;
+    }
+    case "lacked":
+      return `Cannot make ${event.recipe}: need ${summarize(event.missing)}`;
   }
+}
+
+function summarize(needed: Record<string, number>): string {
+  return Object.entries(needed)
+    .map(([item, count]) => `${count} ${item}`)
+    .join(", ");
 }
 
 // The readout, as ordinary page elements that CSS can style and that assistive
@@ -45,6 +58,9 @@ export class Hud {
     if (event.type === "gathered") {
       this.gathered.add(cellKey(event.at));
       this.showPosition();
+      this.showInventory(event.inventory);
+    }
+    if (event.type === "crafted") {
       this.showInventory(event.inventory);
     }
   }

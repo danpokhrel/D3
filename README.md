@@ -28,7 +28,7 @@ forest: requires axe -wood
 
 dungeon: requires torch and lockpick -mana crystals
 
-dungeon core: requires magic ball
+dungeon core: requires magic catalyst
 
 Terrain boundary: ocean (below the beach)
 

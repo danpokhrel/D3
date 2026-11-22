@@ -89,6 +89,36 @@ body {
   padding: 0;
 }
 
+#recipes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#recipes button {
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: #cfc6b8;
+  background: #17140f;
+  border: 1px solid #3a3128;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#recipes button:hover {
+  background: #221d15;
+}
+
+#recipes button:focus-visible {
+  border-color: #a89678;
+  outline: none;
+}
+
 #mute {
   align-self: start;
   padding: 6px 12px;

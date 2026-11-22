@@ -3,6 +3,7 @@
 // apply() decides how, or whether, to show them over time.
 
 import { isPassable, type Terrain, terrainAt, YIELDS } from "./terrain.ts";
+import { type Recipe, recipeNamed } from "./recipes.ts";
 
 export type Cell = { x: number; y: number };
 
@@ -22,7 +23,8 @@ export type GameState = {
 // Command: https://gameprogrammingpatterns.com/command.html
 export type Command =
   | { type: "move"; direction: Direction }
-  | { type: "gather" };
+  | { type: "gather" }
+  | { type: "craft"; recipe: string };
 
 // Domain Event: https://martinfowler.com/eaaDev/DomainEvent.html
 export type GameEvent =
@@ -34,6 +36,18 @@ export type GameEvent =
     item: string;
     count: number;
     inventory: Record<string, number>;
+  }
+  | {
+    type: "crafted";
+    recipe: string;
+    inputs: Record<string, number>;
+    output: { item: string; count: number };
+    inventory: Record<string, number>;
+  }
+  | {
+    type: "lacked";
+    recipe: string;
+    missing: Record<string, number>;
   };
 
 const STEPS: Record<Direction, Cell> = {
@@ -63,12 +77,26 @@ export function cellNow(
   };
 }
 
+export function missingFor(
+  state: GameState,
+  recipe: Recipe,
+): Record<string, number> {
+  const missing: Record<string, number> = {};
+  for (const [item, needed] of Object.entries(recipe.inputs)) {
+    const have = state.inventory[item] ?? 0;
+    if (have < needed) missing[item] = needed - have;
+  }
+  return missing;
+}
+
 export function apply(state: GameState, command: Command): GameEvent[] {
   switch (command.type) {
     case "move":
       return move(state, command.direction);
     case "gather":
       return gather(state);
+    case "craft":
+      return craft(state, command.recipe);
   }
 }
 
@@ -101,4 +129,29 @@ function gather(state: GameState): GameEvent[] {
 
   const inventory = { ...state.inventory };
   return [{ type: "gathered", at, item, count, inventory }];
+}
+
+function craft(state: GameState, name: string): GameEvent[] {
+  const recipe = recipeNamed(name);
+  if (!recipe) return [];
+
+  const missing = missingFor(state, recipe);
+  if (Object.keys(missing).length > 0) {
+    return [{ type: "lacked", recipe: recipe.name, missing }];
+  }
+
+  for (const [item, count] of Object.entries(recipe.inputs)) {
+    state.inventory[item] -= count;
+    if (state.inventory[item] === 0) delete state.inventory[item];
+  }
+  state.inventory[recipe.output.item] =
+    (state.inventory[recipe.output.item] ?? 0) + recipe.output.count;
+
+  return [{
+    type: "crafted",
+    recipe: recipe.name,
+    inputs: { ...recipe.inputs },
+    output: { ...recipe.output },
+    inventory: { ...state.inventory },
+  }];
 }

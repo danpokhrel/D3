@@ -96,6 +96,10 @@ export class GridView extends Phaser.Scene {
         this.gathered.add(cellKey(event.at));
         this.drawCellsAround(event.at);
         return this.pop(event.at);
+      case "crafted":
+        return this.pop(this.markerAt());
+      case "lacked":
+        return Promise.resolve();
       default:
         // A new event type fails to type-check here until it has a presentation.
         event satisfies never;
@@ -134,7 +138,6 @@ export class GridView extends Phaser.Scene {
     });
   }
   private pop(at: Cell): Promise<void> {
-    console.log("pop at", at);
     const { x, y } = cellCenter(at);
     const flash = this.add.rectangle(x, y, CELL_SIZE, CELL_SIZE, GATHER_COLOR);
     flash.setAlpha(0.8);
@@ -151,6 +154,12 @@ export class GridView extends Phaser.Scene {
         },
       });
     });
+  }
+  private markerAt(): Cell {
+    return {
+      x: Math.round(this.marker.x / CELL_SIZE - 0.5),
+      y: Math.round(this.marker.y / CELL_SIZE - 0.5),
+    };
   }
   // Paint only what is near the camera. Asking the core again costs little, and
   // the world itself is never stored.

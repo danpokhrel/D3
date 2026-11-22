@@ -3,6 +3,7 @@ import { Controller } from "./controller.ts";
 import { startGridView } from "./grid/grid_view.ts";
 import { Hud } from "./hud.ts";
 import { Presenter } from "./presenter.ts";
+import { RecipeBook } from "./recipe_book.ts";
 import { Sounds } from "./sounds.ts";
 
 // Where everything is wired together, and the only file that knows every part.
@@ -21,8 +22,17 @@ const grid = await startGridView(document.getElementById("grid")!, state);
 const presenter = new Presenter([grid, hud, sounds]);
 const controller = new Controller(state, presenter);
 
+// The list reads the core only when nothing is playing, via onSettled: during
+// playback the core is ahead of what the player has seen.
+const recipes = new RecipeBook(
+  document.getElementById("recipes") as HTMLUListElement,
+  state,
+  (command) => controller.request(command),
+);
+controller.onSettled = () => recipes.update();
+
 // For poking at in the browser console, such as comparing logical state with
 // presentation state: game.state
 Object.assign(globalThis, {
-  game: { state, grid, hud, sounds, presenter, controller },
+  game: { state, grid, hud, sounds, presenter, controller, recipes },
 });
