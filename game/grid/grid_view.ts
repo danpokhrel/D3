@@ -15,10 +15,11 @@ const GATHER_COLOR = 0xfff3c4;
 const GATHER_MS = 150;
 
 const TERRAIN_COLORS: Record<Terrain, number> = {
-  beach: 0x5d9e4a,
+  beach: 0xe6d47f,
   forest: 0x2f6b3a,
-  dungeon: 0x2d5f9e,
-  ocean: 0x6e6a66,
+  dungeon: 0x808080,
+  "dungeon core": 0x9b59b6,
+  ocean: 0x2d5f9e,
 };
 
 function darken(color: number, amount = 0.55): number {

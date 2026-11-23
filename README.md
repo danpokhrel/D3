@@ -17,7 +17,7 @@ or `any` after `deno task setup`, type or save in that file once.
 ## Target
 
 You are an adventurer looking to expore a dungeon. The terrain includes beach,
-forest, dungeon, tundra. The player can gather materials and craft torches,
+forest, dungeon, ocean. The player can gather materials and craft torches,
 lockpicks, axes, etc to get into the core of the dungeon.
 
 Three walkable terrains: beach -> forest -> dungeon
