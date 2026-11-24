@@ -1,4 +1,51 @@
-# D3 starter
+# Heart of the Dungeon
+
+**Play it:** https://danpokhrel.github.io/D3/
+
+## Target
+
+You are an adventurer looking to explore a dungeon. The island has beach,
+forest, dungeon and ocean. The player gathers materials and crafts torches,
+lockpicks, axes and more to reach the core of the dungeon.
+
+Only the beach is open at the start. Each tool opens the next area:
+
+- Beach: open from the start. Gives stone.
+- Forest: requires an axe. Gives wood.
+- Dungeon: requires a lockpick. Gives mana crystal.
+- Dungeon core: requires a magic catalyst. Gives core shards.
+- Ocean: surrounds the whole island and can never be crossed.
+
+## How to Play
+
+**Movement:** Arrow keys to move
+
+**G:** Pressing G will gather the cell you are standing on. Each cell gives 1 item
+
+**Recipes Menu:** Pressing Tab to reach a recipe, then Enter to make it once you have the required items. You can also click it.
+
+**Goal:** craft the tools that open new biomes. Your goal is to make the Heart of
+the Dungeon. If you are blocked, a message will appear under the recipes saying
+what you need.
+
+## Run it locally
+
+```sh
+git clone https://github.com/danpokhrel/D3.git
+cd D3
+deno task setup
+deno task dev
+```
+
+Open the URL it prints and add `?seed=121`.
+
+## Add a recipe
+
+A recipe is one row in `RECIPES` in `core/recipes.ts`, with a `name`, its
+`inputs` and its `output`. No other file changes. A new barrier is one row in
+`BARRIERS` in `core/terrain.ts`.
+
+## About D3 starter
 
 A walking skeleton: one thin slice of a game that works from end to end. The
 player moves gridwise over a big seeded world, with a game core that knows
@@ -13,24 +60,6 @@ once. Run `deno task dev` and open the local URL printed in the terminal
 for another world. Open the repository folder itself in VS Code, not a parent
 folder, and accept the recommended Deno extension. If Phaser still shows errors
 or `any` after `deno task setup`, type or save in that file once.
-
-## Target
-
-You are an adventurer looking to expore a dungeon. The terrain includes beach,
-forest, dungeon, ocean. The player can gather materials and craft torches,
-lockpicks, axes, etc to get into the core of the dungeon.
-
-Three walkable terrains: beach -> forest -> dungeon
-
-Beach: -stone
-
-forest: requires axe -wood
-
-dungeon: requires torch and lockpick -mana crystals
-
-dungeon core: requires magic catalyst
-
-Terrain boundary: ocean (below the beach)
 
 ## Two folders, two rules
 
