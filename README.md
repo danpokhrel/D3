@@ -1,7 +1,3 @@
-# Heart of the Dungeon
-
-**Play it:** https://danpokhrel.github.io/D3/
-
 ## Target
 
 You are an adventurer looking to explore a dungeon. The island has beach,
@@ -15,6 +11,10 @@ Only the beach is open at the start. Each tool opens the next area:
 - Dungeon: requires a lockpick. Gives mana crystal.
 - Dungeon core: requires a magic catalyst. Gives core shards.
 - Ocean: surrounds the whole island and can never be crossed.
+
+# Heart of the Dungeon
+
+**Play it:** https://danpokhrel.github.io/D3/
 
 ## How to Play
 
