@@ -4,6 +4,8 @@ export type Recipe = {
   output: { item: string; count: number };
 };
 
+export const CAPSTONE = "heart of the dungeon";
+
 export const RECIPES: Recipe[] = [
   { name: "axe", inputs: { stone: 1 }, output: { item: "axe", count: 1 } },
   {
@@ -20,6 +22,11 @@ export const RECIPES: Recipe[] = [
     name: "magic catalyst",
     inputs: { lockpick: 1, torch: 1, "mana crystal": 2 },
     output: { item: "magic catalyst", count: 1 },
+  },
+  {
+    name: CAPSTONE,
+    inputs: { "core shard": 3, "mana crystal": 2, torch: 1 },
+    output: { item: CAPSTONE, count: 1 },
   },
 ];
 

@@ -25,6 +25,8 @@ function describe(event: GameEvent): string {
     }
     case "lacked":
       return `Cannot make ${event.recipe}: need ${summarize(event.missing)}`;
+    case "ended":
+      return `The ${event.item} is forged. The dungeon's heart stills. You have won.`;
   }
 }
 
@@ -62,6 +64,10 @@ export class Hud {
     }
     if (event.type === "crafted") {
       this.showInventory(event.inventory);
+    }
+    if (event.type === "ended") {
+      // The core said the game is over; the banner only shows it.
+      element("banner").hidden = false;
     }
   }
 

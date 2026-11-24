@@ -7,7 +7,8 @@ function names(recipes: Recipe[]): string[] {
 
 Deno.test("every recipe in the real table can be made", () => {
   // The tracer's answer, worked by hand: stone and wood, then the axe, torch
-  // and lockpick, which opens the dungeon for mana crystal, then the catalyst.
+  // and lockpick, which opens the dungeon for mana crystal, then the catalyst,
+  // which opens the dungeon core for core shards, then the capstone.
   assertEquals(names(unreachableRecipes(RECIPES)), []);
 });
 
@@ -29,5 +30,8 @@ Deno.test("without its opener, what lies behind a barrier is unreachable", () =>
   // crystal can be made. This is the barrier hook doing its job.
   const noLockpick = RECIPES.filter((recipe) => recipe.name !== "lockpick");
 
-  assertEquals(names(unreachableRecipes(noLockpick)), ["magic catalyst"]);
+  assertEquals(names(unreachableRecipes(noLockpick)), [
+    "magic catalyst",
+    "heart of the dungeon",
+  ]);
 });

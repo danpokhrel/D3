@@ -69,7 +69,7 @@ export const YIELDS: Record<Terrain, string | null> = {
   beach: "stone",
   forest: "wood",
   dungeon: "mana crystal",
-  "dungeon core": null,
+  "dungeon core": "core shard",
   ocean: null,
 };
 

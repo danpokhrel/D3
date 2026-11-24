@@ -99,6 +99,8 @@ export class GridView extends Phaser.Scene {
         return this.pop(event.at);
       case "crafted":
         return this.pop(this.markerAt());
+      case "ended":
+        return this.pop(this.markerAt());
       case "lacked":
         return Promise.resolve();
       default:

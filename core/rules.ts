@@ -3,7 +3,7 @@
 // apply() decides how, or whether, to show them over time.
 
 import { isPassable, type Terrain, terrainAt, YIELDS } from "./terrain.ts";
-import { type Recipe, recipeNamed } from "./recipes.ts";
+import { CAPSTONE, type Recipe, recipeNamed } from "./recipes.ts";
 
 export type Cell = { x: number; y: number };
 
@@ -18,6 +18,8 @@ export type GameState = {
   inventory: Record<string, number>;
 
   changed: Record<string, "gathered">;
+
+  won: boolean;
 };
 
 // Command: https://gameprogrammingpatterns.com/command.html
@@ -48,7 +50,8 @@ export type GameEvent =
     type: "lacked";
     recipe: string;
     missing: Record<string, number>;
-  };
+  }
+  | { type: "ended"; item: string };
 
 const STEPS: Record<Direction, Cell> = {
   north: { x: 0, y: -1 },
@@ -59,7 +62,13 @@ const STEPS: Record<Direction, Cell> = {
 
 // Singleton, avoided on purpose: tests make as many games as they need. https://gameprogrammingpatterns.com/singleton.html
 export function newGame(seed: number): GameState {
-  return { seed, player: { x: 0, y: 0 }, inventory: {}, changed: {} };
+  return {
+    seed,
+    player: { x: 0, y: 0 },
+    inventory: {},
+    changed: {},
+    won: false,
+  };
 }
 
 export function cellKey(cell: Cell): string {
@@ -90,6 +99,7 @@ export function missingFor(
 }
 
 export function apply(state: GameState, command: Command): GameEvent[] {
+  if (state.won) return [];
   switch (command.type) {
     case "move":
       return move(state, command.direction);
@@ -147,11 +157,17 @@ function craft(state: GameState, name: string): GameEvent[] {
   state.inventory[recipe.output.item] =
     (state.inventory[recipe.output.item] ?? 0) + recipe.output.count;
 
-  return [{
+  const events: GameEvent[] = [{
     type: "crafted",
     recipe: recipe.name,
     inputs: { ...recipe.inputs },
     output: { ...recipe.output },
     inventory: { ...state.inventory },
   }];
+
+  if (recipe.name === CAPSTONE) {
+    state.won = true;
+    events.push({ type: "ended", item: recipe.output.item });
+  }
+  return events;
 }
