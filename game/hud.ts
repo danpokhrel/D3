@@ -1,4 +1,5 @@
 import {
+  BARRIERS,
   type Cell,
   cellKey,
   type GameEvent,
@@ -14,8 +15,10 @@ function describe(event: GameEvent): string {
   switch (event.type) {
     case "moved":
       return `moved to ${event.to.x}, ${event.to.y}`;
-    case "blocked":
-      return `blocked by ${event.terrain} at ${event.toward.x}, ${event.toward.y}`;
+    case "blocked": {
+      const needs = BARRIERS[event.terrain];
+      return `blocked by ${event.terrain}${needs ? `: needs ${needs}` : ""}`;
+    }
     case "gathered":
       return `Gathered ${event.item} (you have ${event.count})`;
     case "crafted": {
@@ -25,6 +28,8 @@ function describe(event: GameEvent): string {
     }
     case "lacked":
       return `Cannot make ${event.recipe}: need ${summarize(event.missing)}`;
+    case "refused":
+      return `Cannot make ${event.recipe}: you would be trapped in ${event.terrain}`;
     case "ended":
       return `The ${event.item} is forged. The dungeon's heart stills. You have won.`;
   }
@@ -34,6 +39,22 @@ function summarize(needed: Record<string, number>): string {
   return Object.entries(needed)
     .map(([item, count]) => `${count} ${item}`)
     .join(", ");
+}
+
+// The message line's color: a warning for refusals, a highlight for gains.
+function toneOf(event: GameEvent): string {
+  switch (event.type) {
+    case "blocked":
+    case "lacked":
+    case "refused":
+      return "warn";
+    case "gathered":
+    case "crafted":
+    case "ended":
+      return "good";
+    default:
+      return "";
+  }
 }
 
 // The readout, as ordinary page elements that CSS can style and that assistive
@@ -49,10 +70,13 @@ export class Hud {
     this.seed = state.seed;
     this.here = { ...state.player };
     this.showPosition();
+    // Safe to read state here: nothing has played yet.
+    this.showInventory({ ...state.inventory });
   }
 
   show(event: GameEvent) {
     element("live").textContent = describe(event);
+    element("live").className = toneOf(event);
     if (event.type === "moved") {
       this.here = { ...event.to };
       this.showPosition();
@@ -79,13 +103,21 @@ export class Hud {
     element("terrain").textContent = `${terrain}${spent ? " (spent)" : ""}`;
   }
 
+  // One plain line per item, from the event's own copy, never from state.
   private showInventory(inventory: Record<string, number>) {
-    element("inventory").replaceChildren(
-      ...Object.entries(inventory).map(([item, count]) => {
+    const rows = Object.entries(inventory)
+      .filter(([, count]) => count > 0)
+      .map(([item, count]) => {
         const row = document.createElement("li");
-        row.textContent = `${item}: ${count}`;
+        row.textContent = count > 1 ? `${item} ×${count}` : item;
         return row;
-      }),
-    );
+      });
+    if (rows.length === 0) {
+      const empty = document.createElement("li");
+      empty.className = "empty";
+      empty.textContent = "Nothing yet";
+      rows.push(empty);
+    }
+    element("inventory").replaceChildren(...rows);
   }
 }

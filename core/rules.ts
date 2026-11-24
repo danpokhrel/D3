@@ -51,6 +51,7 @@ export type GameEvent =
     recipe: string;
     missing: Record<string, number>;
   }
+  | { type: "refused"; recipe: string; terrain: Terrain }
   | { type: "ended"; item: string };
 
 const STEPS: Record<Direction, Cell> = {
@@ -150,13 +151,20 @@ function craft(state: GameState, name: string): GameEvent[] {
     return [{ type: "lacked", recipe: recipe.name, missing }];
   }
 
+  const barrierCheckInv = { ...state.inventory };
   for (const [item, count] of Object.entries(recipe.inputs)) {
-    state.inventory[item] -= count;
-    if (state.inventory[item] === 0) delete state.inventory[item];
+    barrierCheckInv[item] -= count;
+    if (barrierCheckInv[item] === 0) delete barrierCheckInv[item];
   }
-  state.inventory[recipe.output.item] =
-    (state.inventory[recipe.output.item] ?? 0) + recipe.output.count;
+  barrierCheckInv[recipe.output.item] =
+    (barrierCheckInv[recipe.output.item] ?? 0) +
+    recipe.output.count;
+  const { terrain } = cellNow(state, state.player);
+  if (!isPassable(terrain, barrierCheckInv)) {
+    return [{ type: "refused", recipe: recipe.name, terrain }];
+  }
 
+  state.inventory = barrierCheckInv;
   const events: GameEvent[] = [{
     type: "crafted",
     recipe: recipe.name,

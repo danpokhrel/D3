@@ -184,3 +184,126 @@ body {
     opacity: 1;
   }
 }
+
+#hud {
+  width: 320px;
+  padding: 16px;
+  background: #1f2126;
+  color: #e8e6e1;
+  border: 1px solid #34373e;
+  border-radius: 10px;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+#hud h3 {
+  margin: 16px 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #9a978f;
+}
+
+/* Position and terrain */
+#hud dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 12px;
+  margin: 0;
+}
+#hud dt {
+  color: #9a978f;
+}
+#hud dd {
+  margin: 0;
+}
+
+#hud .goal {
+  margin: 12px 0 0;
+  padding: 6px 10px;
+  background: #2a2d34;
+  border-radius: 6px;
+}
+
+/* Inventory: one line per item */
+#hud #inventory {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#hud #inventory li {
+  padding: 3px 0;
+  border-bottom: 1px solid #2c2f35;
+}
+#hud #inventory li.empty {
+  color: #77746d;
+}
+
+/* Recipes: name and button on one line, needs below */
+#hud #recipes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#hud .recipe {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 2px 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #2c2f35;
+}
+#hud .recipe-name {
+  font-weight: 600;
+}
+#hud .recipe:not(.ready) .recipe-name {
+  color: #9a978f;
+}
+#hud .recipe-needs,
+#hud .recipe-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 13px;
+  color: #b5b2aa;
+}
+#hud .recipe-note {
+  color: #8fb3d9;
+}
+
+#hud button {
+  padding: 4px 12px;
+  font: inherit;
+  font-size: 13px;
+  color: #e8e6e1;
+  background: transparent;
+  border: 1px solid #4a4e57;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#hud .recipe.ready button {
+  background: #3d7a4a;
+  border-color: #3d7a4a;
+  color: #fff;
+}
+#hud button:focus-visible {
+  outline: 2px solid #8fb3d9;
+  outline-offset: 2px;
+}
+
+/* Event line: color set by hud.ts */
+#hud #live {
+  margin: 14px 0 10px;
+  padding: 6px 10px;
+  min-height: 1.4em;
+  border-left: 3px solid #4a4e57;
+}
+#hud #live.warn {
+  border-left-color: #d9a441;
+  color: #f0c56b;
+}
+#hud #live.good {
+  border-left-color: #5fa86d;
+  color: #9fd4a8;
+}
