@@ -7,20 +7,20 @@ export type Recipe = {
 export const CAPSTONE = "heart of the dungeon";
 
 export const RECIPES: Recipe[] = [
-  { name: "axe", inputs: { stone: 1 }, output: { item: "axe", count: 1 } },
+  { name: "axe", inputs: { stone: 4 }, output: { item: "axe", count: 1 } },
   {
     name: "torch",
-    inputs: { wood: 2, stone: 1 },
+    inputs: { wood: 4, stone: 2 },
     output: { item: "torch", count: 1 },
   },
   {
     name: "lockpick",
-    inputs: { stone: 1, wood: 1 },
+    inputs: { stone: 10, wood: 10 },
     output: { item: "lockpick", count: 1 },
   },
   {
     name: "magic catalyst",
-    inputs: { lockpick: 1, torch: 1, "mana crystal": 2 },
+    inputs: { lockpick: 1, torch: 4, "mana crystal": 2 },
     output: { item: "magic catalyst", count: 1 },
   },
   {
