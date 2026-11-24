@@ -80,6 +80,7 @@ export const BARRIERS: Partial<Record<Terrain, string | null>> = {
   ocean: null,
   forest: "axe",
   dungeon: "lockpick",
+  "dungeon core": "magic catalyst",
 };
 
 // May the player enter this terrain, holding this inventory?
