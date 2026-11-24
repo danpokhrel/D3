@@ -30,17 +30,22 @@ Deno.test("a ready craft spends inputs and adds the output", () => {
   assertEquals(events[0].output, first.output);
 });
 
-Deno.test("the crafted event keeps copies while state moves on", () => {
+Deno.test("a crafted event you kept does not change after a later craft", () => {
+  // Given a kept crafted event
   const state = withInputs(first);
+  const [kept] = apply(state, { type: "craft", recipe: first.name });
+  assert(kept.type === "crafted");
+  const snapshot = JSON.parse(JSON.stringify(kept));
 
-  const [event] = apply(state, { type: "craft", recipe: first.name });
-  assert(event.type === "crafted");
-  const kept = event.inventory;
+  // When the same recipe is crafted again
+  for (const [item, count] of Object.entries(first.inputs)) {
+    state.inventory[item] = (state.inventory[item] ?? 0) + count;
+  }
+  const [later] = apply(state, { type: "craft", recipe: first.name });
+  assert(later.type === "crafted");
 
-  state.inventory[first.inputs ? Object.keys(first.inputs)[0] : ""] = 99;
-
-  assert(kept !== state.inventory);
-  assertEquals(kept[first.output.item], first.output.count);
+  // Then the kept event still shows the inventory from when it happened
+  assertEquals(kept, snapshot);
 });
 
 Deno.test("a failed craft changes nothing and says why", () => {

@@ -64,10 +64,6 @@ function dungeonDiscs(seed: number): { x: number; y: number; r: number }[] {
   return discs;
 }
 
-export function isPassable(terrain: Terrain): boolean {
-  return terrain !== "ocean";
-}
-
 // Type Object: one row per terrain, saying what gathering there gives.
 export const YIELDS: Record<Terrain, string | null> = {
   beach: "stone",
@@ -76,6 +72,25 @@ export const YIELDS: Record<Terrain, string | null> = {
   "dungeon core": null,
   ocean: null,
 };
+
+// Type Object: terrain you cannot enter with bare hands, and the held item that
+// lets you in. null means nothing opens it. A terrain not listed is always open.
+// Holding the opener keeps the way open; entering does not spend it.
+export const BARRIERS: Partial<Record<Terrain, string | null>> = {
+  ocean: null,
+  forest: "axe",
+  dungeon: "lockpick",
+};
+
+// May the player enter this terrain, holding this inventory?
+export function isPassable(
+  terrain: Terrain,
+  inventory: Record<string, number>,
+): boolean {
+  if (!(terrain in BARRIERS)) return true;
+  const opener = BARRIERS[terrain];
+  return opener != null && (inventory[opener] ?? 0) > 0;
+}
 
 // Value noise: random numbers at coarse grid points, blended between them, so
 // that terrain forms regions instead of static.
