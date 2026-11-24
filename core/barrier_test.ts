@@ -29,11 +29,11 @@ function besideEast(terrain: Terrain): GameState {
 
 // One set of tests per barrier row with an opener, so a new row is tested
 // without a new test.
-for (const [terrain, opener] of Object.entries(BARRIERS)) {
-  if (opener == null) continue;
+for (const [terrain, openers] of Object.entries(BARRIERS)) {
+  if (openers == null) continue;
   const barrier = terrain as Terrain;
 
-  Deno.test(`${barrier} is shut without ${opener}`, () => {
+  Deno.test(`${barrier} is shut without ${openers.join(" + ")}`, () => {
     const state = besideEast(barrier);
     const snapshot = JSON.parse(JSON.stringify(state));
 
@@ -44,16 +44,16 @@ for (const [terrain, opener] of Object.entries(BARRIERS)) {
     assertEquals(state, snapshot);
   });
 
-  Deno.test(`${barrier} opens with ${opener}, which is kept`, () => {
+  Deno.test(`${barrier} opens with ${openers.join(" + ")}, which are kept`, () => {
     const state = besideEast(barrier);
-    state.inventory[opener] = 1;
+    for (const item of openers) state.inventory[item] = 1;
     const { x, y } = state.player;
 
     const events = apply(state, { type: "move", direction: "east" });
 
     assert(events[0].type === "moved");
     assertEquals(state.player, { x: x + 1, y });
-    assertEquals(state.inventory[opener], 1);
+    for (const item of openers) assertEquals(state.inventory[item], 1);
   });
 
   const item = YIELDS[barrier];
@@ -61,7 +61,7 @@ for (const [terrain, opener] of Object.entries(BARRIERS)) {
 
   Deno.test(`gathering inside ${barrier} gives ${item}`, () => {
     const state = besideEast(barrier);
-    state.inventory[opener] = 1;
+    for (const item of openers) state.inventory[item] = 1;
     apply(state, { type: "move", direction: "east" });
 
     const events = apply(state, { type: "gather" });

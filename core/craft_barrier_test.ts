@@ -39,6 +39,23 @@ Deno.test("spending your last lockpick in the dungeon is refused", () => {
   assertEquals(state, snapshot);
 });
 
+Deno.test("spending your last lockpick in the dungeon core is refused", () => {
+  const state = standingOn("dungeon core");
+  const recipe = recipeNamed("magic catalyst")!;
+  state.inventory = { ...recipe.inputs };
+  state.inventory["magic catalyst"] = 1;
+  const snapshot = JSON.parse(JSON.stringify(state));
+
+  const events = apply(state, { type: "craft", recipe: recipe.name });
+
+  assertEquals(events, [{
+    type: "refused",
+    recipe: recipe.name,
+    terrain: "dungeon core",
+  }]);
+  assertEquals(state, snapshot);
+});
+
 Deno.test("spending your last lockpick on the beach is allowed", () => {
   const state = standingOn("beach");
   const recipe = recipeNamed("magic catalyst")!;
